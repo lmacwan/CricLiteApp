@@ -1,36 +1,50 @@
 package com.leon.android.app.criclite;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AdView mAdView;
     private boolean isShown = false;
     private boolean isWelcomeAdInitialized = false;
-    private AdRequest adRequest;
+    private Handler mHomeActivityHandler;
+    private long mHomeActivityMillis = 6000;
 
-    TimerTask task = new TimerTask() {
+    private AdView mAdView;
+    private AdRequest adRequest;
+    private ProgressBar mProgressBar;
+
+
+    TimerTask adTask = new TimerTask() {
         @Override
         public void run() {
             mAdView = (AdView) findViewById(R.id.fullScreenAdView);
             adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
             mAdView.loadAd(adRequest);
             isWelcomeAdInitialized = true;
+
+            mHomeActivityHandler = new Handler();
+            mHomeActivityHandler.postDelayed(homeActivityTask, mHomeActivityMillis);
+        }
+    };
+
+    TimerTask homeActivityTask = new TimerTask() {
+        @Override
+        public void run() {
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         }
     };
 
@@ -39,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.fullScreenProgressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
+
         Handler handler = new Handler(Looper.getMainLooper()) ;
-        handler.postDelayed(task, 1000);
+        handler.postDelayed(adTask, 500);
     }
 
     @Override

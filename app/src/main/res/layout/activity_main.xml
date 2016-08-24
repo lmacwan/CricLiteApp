@@ -38,4 +38,13 @@
         ads:adUnitId="ca-app-pub-1722652593194773/5891624041"
         />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="63dp"
+        android:id="@+id/fullScreenProgressBar"
+        android:layout_above="@+id/fullScreenAdView"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
